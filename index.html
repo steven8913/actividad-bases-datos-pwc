@@ -303,24 +303,30 @@
 <div class="u4-note reveal"><b>Lectura de normalización:</b> las tablas verificadas usan claves primarias simples. Por ello, no se observan dependencias parciales propias de claves compuestas. La separación de catálogos evita repetir sus nombres descriptivos en EMPLEADOS. La conclusión de 3FN se presenta para las dependencias representadas por las claves y relaciones verificadas; las dependencias funcionales de negocio que no están declaradas como restricciones no pueden demostrarse únicamente con el diccionario de Oracle.</div>
 
 <div class="u4-note reveal"><b>Alcance del DDL:</b> el bloque SQL reproduce las definiciones de las tablas cuya estructura fue recuperada en los CSV de Oracle: BANCO, CIUDAD, DETALLE_NOMINA, EMPLEADOS, EMPRESAS, NOMINA, TIPO_CONTRATO, TIPO_EMPLEADO y TIPO_SALARIO. Las tablas CONTRATOS, DEPARTAMENTO, ESTADO_CIVIL, NACIONALIDAD y TIPO_DOCUMENTO sí se documentan como parte del modelo de 14 tablas, pero no se inventa su DDL porque sus columnas no fueron recuperadas en la consulta estructural entregada.</div>
+<p class="intro" style="margin-top:26px">
+  <b>Las 14 tablas del modelo están identificadas en esta Unidad 4.</b>
+  Para mantener la exactitud académica, el SQL se separa entre la estructura
+  física que fue recuperada directamente de Oracle y las cinco tablas adicionales
+  cuya estructura de columnas no apareció en los archivos exportados.
+</p>
 <div class="sql-columns reveal">
   <div>
-    <div class="sql-block"><div class="sql-title">DDL · definición de tablas y relaciones verificadas</div><pre>-- DDL verificado a partir de la estructura recuperada en Oracle
+    <div class="sql-block"><div class="sql-title">DDL · 14 TABLAS DEL MODELO</div><pre>-- DDL VERIFICADO · ESTRUCTURA RECUPERADA DIRECTAMENTE DE ORACLE
 
--- BANCO
+-- 01. BANCO
 CREATE TABLE BANCO (
     ID NUMBER PRIMARY KEY,
     NOMBRE VARCHAR2(100) NOT NULL
 );
 
--- CIUDAD
+-- 02. CIUDAD
 CREATE TABLE CIUDAD (
     ID NUMBER PRIMARY KEY,
     DEPARTAMENTO_ID NUMBER NOT NULL,
     NOMBRE VARCHAR2(100) NOT NULL
 );
 
--- EMPRESAS
+-- 03. EMPRESAS
 CREATE TABLE EMPRESAS (
     ID_EMPRESA NUMBER PRIMARY KEY,
     NOMBRE VARCHAR2(200),
@@ -330,25 +336,25 @@ CREATE TABLE EMPRESAS (
     ESTADO VARCHAR2(20)
 );
 
--- TIPO_CONTRATO
+-- 04. TIPO_CONTRATO
 CREATE TABLE TIPO_CONTRATO (
     ID NUMBER PRIMARY KEY,
     NOMBRE VARCHAR2(50)
 );
 
--- TIPO_EMPLEADO
+-- 05. TIPO_EMPLEADO
 CREATE TABLE TIPO_EMPLEADO (
     ID NUMBER PRIMARY KEY,
     NOMBRE VARCHAR2(50)
 );
 
--- TIPO_SALARIO
+-- 06. TIPO_SALARIO
 CREATE TABLE TIPO_SALARIO (
     ID NUMBER PRIMARY KEY,
     NOMBRE VARCHAR2(50)
 );
 
--- EMPLEADOS
+-- 07. EMPLEADOS
 CREATE TABLE EMPLEADOS (
     ID_EMPLEADO NUMBER PRIMARY KEY,
     ID_EMPRESA NUMBER NOT NULL,
@@ -364,16 +370,20 @@ CREATE TABLE EMPLEADOS (
     TIPO_EMPLEADO_ID NUMBER,
     TIPO_SALARIO_ID NUMBER,
     TIPO_DOCUMENTO_ID NUMBER,
-    CONSTRAINT FK_EMP_EMPRESA FOREIGN KEY (ID_EMPRESA) REFERENCES EMPRESAS(ID_EMPRESA),
-    CONSTRAINT FK_EMP_TIPO_CONTRATO FOREIGN KEY (TIPO_CONTRATO_ID) REFERENCES TIPO_CONTRATO(ID),
-    CONSTRAINT FK_EMP_TIPO_EMPLEADO FOREIGN KEY (TIPO_EMPLEADO_ID) REFERENCES TIPO_EMPLEADO(ID),
-    CONSTRAINT FK_EMP_TIPO_SALARIO FOREIGN KEY (TIPO_SALARIO_ID) REFERENCES TIPO_SALARIO(ID),
-    CONSTRAINT CHK_ESTADO CHECK (ESTADO IN ('ACTIVO','INACTIVO')),
-    CONSTRAINT CHK_SALARIO CHECK (SALARIO_BASE > 0),
-    CONSTRAINT CHK_AUX_TRANSPORTE CHECK (AUXILIO_TRANSPORTE IN ('SI','NO'))
+    CONSTRAINT FK_EMP_EMPRESA FOREIGN KEY (ID_EMPRESA)
+        REFERENCES EMPRESAS(ID_EMPRESA),
+    CONSTRAINT FK_EMP_TIPO_CONTRATO FOREIGN KEY (TIPO_CONTRATO_ID)
+        REFERENCES TIPO_CONTRATO(ID),
+    CONSTRAINT FK_EMP_TIPO_EMPLEADO FOREIGN KEY (TIPO_EMPLEADO_ID)
+        REFERENCES TIPO_EMPLEADO(ID),
+    CONSTRAINT FK_EMP_TIPO_SALARIO FOREIGN KEY (TIPO_SALARIO_ID)
+        REFERENCES TIPO_SALARIO(ID),
+    CONSTRAINT CHK_ESTADO CHECK (ESTADO IN (&#x27;ACTIVO&#x27;,&#x27;INACTIVO&#x27;)),
+    CONSTRAINT CHK_SALARIO CHECK (SALARIO_BASE &gt; 0),
+    CONSTRAINT CHK_AUX_TRANSPORTE CHECK (AUXILIO_TRANSPORTE IN (&#x27;SI&#x27;,&#x27;NO&#x27;))
 );
 
--- NOMINA
+-- 08. NOMINA
 CREATE TABLE NOMINA (
     ID_NOMINA NUMBER PRIMARY KEY,
     ID_EMPRESA NUMBER NOT NULL,
@@ -384,7 +394,7 @@ CREATE TABLE NOMINA (
     ESTADO VARCHAR2(20)
 );
 
--- DETALLE_NOMINA
+-- 09. DETALLE_NOMINA
 CREATE TABLE DETALLE_NOMINA (
     ID_DETALLE NUMBER PRIMARY KEY,
     ID_NOMINA NUMBER,
@@ -394,38 +404,148 @@ CREATE TABLE DETALLE_NOMINA (
     TIPO VARCHAR2(20),
     CATEGORIA VARCHAR2(50),
     ES_BASE VARCHAR2(1),
-    CONSTRAINT FK_DET_NOMINA FOREIGN KEY (ID_NOMINA) REFERENCES NOMINA(ID_NOMINA),
-    CONSTRAINT FK_DET_EMPLEADO FOREIGN KEY (ID_EMPLEADO) REFERENCES EMPLEADOS(ID_EMPLEADO)
-);</pre></div>
-  </div>
-  <div>
-    <div class="sql-block"><div class="sql-title">DML · evidencia documental de datos observados</div><pre>-- Datos de prueba observados en Oracle Database Actions
-INSERT INTO EMPRESAS (ID_EMPRESA, NOMBRE, NIT, EMAIL, FECHA_CREACION, ESTADO)
-VALUES (1, &#x27;Empresa Demo&#x27;, &#x27;123&#x27;, &#x27;test@test.com&#x27;, DATE &#x27;2026-04-02&#x27;, &#x27;1&#x27;);
-
-INSERT INTO EMPLEADOS (
-    ID_EMPLEADO, ID_EMPRESA, NOMBRE, DOCUMENTO, SALARIO_BASE,
-    FECHA_INGRESO, ESTADO
-)
-VALUES (
-    1, 1, &#x27;Juan Perez&#x27;, &#x27;123456&#x27;, 2000000,
-    DATE &#x27;2026-04-02&#x27;, &#x27;ACTIVO&#x27;
+    CONSTRAINT FK_DET_NOMINA FOREIGN KEY (ID_NOMINA)
+        REFERENCES NOMINA(ID_NOMINA),
+    CONSTRAINT FK_DET_EMPLEADO FOREIGN KEY (ID_EMPLEADO)
+        REFERENCES EMPLEADOS(ID_EMPLEADO)
 );
 
--- Detalles observados: salario, salud y pensión
-INSERT INTO DETALLE_NOMINA (ID_DETALLE, ID_NOMINA, ID_EMPLEADO, CONCEPTO, VALOR, TIPO)
-VALUES (1, 1, 1, &#x27;SALARIO&#x27;, 2000000, &#x27;DEVENGO&#x27;);
+-- RELACIONES FÍSICAS CONFIRMADAS POR ORACLE
+-- EMPLEADOS.ID_EMPRESA -&gt; EMPRESAS.ID_EMPRESA
+-- EMPLEADOS.TIPO_CONTRATO_ID -&gt; TIPO_CONTRATO.ID
+-- EMPLEADOS.TIPO_EMPLEADO_ID -&gt; TIPO_EMPLEADO.ID
+-- EMPLEADOS.TIPO_SALARIO_ID -&gt; TIPO_SALARIO.ID
+-- DETALLE_NOMINA.ID_EMPLEADO -&gt; EMPLEADOS.ID_EMPLEADO
+-- DETALLE_NOMINA.ID_NOMINA -&gt; NOMINA.ID_NOMINA
+</pre></div>
+  </div>
+  <div>
+    <div class="sql-block"><div class="sql-title">TABLAS 10–14 · PARTE DEL MODELO</div><pre>-- 10. CONTRATOS
+-- 11. DEPARTAMENTO
+-- 12. ESTADO_CIVIL
+-- 13. NACIONALIDAD
+-- 14. TIPO_DOCUMENTO
 
-INSERT INTO DETALLE_NOMINA (ID_DETALLE, ID_NOMINA, ID_EMPLEADO, CONCEPTO, VALOR, TIPO)
-VALUES (2, 1, 1, &#x27;SALUD&#x27;, 80000, &#x27;DEDUCCION&#x27;);
+-- Estas cinco tablas SÍ pertenecen al conjunto de tablas que
+-- identificamos en el esquema/modelo del proyecto.
+--
+-- IMPORTANTE:
+-- Su estructura de columnas no apareció en los CSV de
+-- USER_TAB_COLUMNS que recuperamos durante esta revisión.
+-- Por ello NO se presenta aquí un CREATE TABLE inventado.
+--
+-- En el modelo relacional se identifican como tablas del sistema,
+-- pero su DDL físico queda pendiente de una exportación específica.
+</pre></div>
+    <div class="sql-block"><div class="sql-title">DML · EVIDENCIA DOCUMENTAL DE DATOS OBSERVADOS</div><pre>-- DML · DATOS OBSERVADOS EN ORACLE DATABASE ACTIONS
 
-INSERT INTO DETALLE_NOMINA (ID_DETALLE, ID_NOMINA, ID_EMPLEADO, CONCEPTO, VALOR, TIPO)
-VALUES (3, 1, 1, &#x27;PENSION&#x27;, 80000, &#x27;DEDUCCION&#x27;);
+-- 01. EMPRESAS
+INSERT INTO EMPRESAS
+    (ID_EMPRESA, NOMBRE, NIT, EMAIL, FECHA_CREACION, ESTADO)
+VALUES
+    (1, &#x27;Empresa Demo&#x27;, &#x27;123&#x27;, &#x27;test@test.com&#x27;,
+     DATE &#x27;2026-04-02&#x27;, &#x27;1&#x27;);
 
--- NOTA: los INSERT anteriores representan documentalmente los datos observados en las capturas de Oracle;
--- no sustituyen un volcado completo de DML de las 14 tablas del modelo.</pre></div>
+-- 02. EMPLEADOS
+INSERT INTO EMPLEADOS
+    (ID_EMPLEADO, ID_EMPRESA, NOMBRE, DOCUMENTO, SALARIO_BASE,
+     FECHA_INGRESO, ESTADO)
+VALUES
+    (1, 1, &#x27;Juan Perez&#x27;, &#x27;123456&#x27;, 2000000,
+     DATE &#x27;2026-04-02&#x27;, &#x27;ACTIVO&#x27;);
+
+-- 03. NOMINA
+-- Registro observado:
+-- ID_NOMINA=1, ID_EMPRESA=1, ESTADO=GENERADA,
+-- TOTAL_DEVENGADO=0, TOTAL_DEDUCIDO=0, NETO=0.
+
+-- 04. DETALLE_NOMINA
+INSERT INTO DETALLE_NOMINA
+    (ID_DETALLE, ID_NOMINA, ID_EMPLEADO, CONCEPTO, VALOR, TIPO)
+VALUES
+    (1, 1, 1, &#x27;SALARIO&#x27;, 2000000, &#x27;DEVENGO&#x27;);
+
+INSERT INTO DETALLE_NOMINA
+    (ID_DETALLE, ID_NOMINA, ID_EMPLEADO, CONCEPTO, VALOR, TIPO)
+VALUES
+    (2, 1, 1, &#x27;SALUD&#x27;, 80000, &#x27;DEDUCCION&#x27;);
+
+INSERT INTO DETALLE_NOMINA
+    (ID_DETALLE, ID_NOMINA, ID_EMPLEADO, CONCEPTO, VALOR, TIPO)
+VALUES
+    (3, 1, 1, &#x27;PENSION&#x27;, 80000, &#x27;DEDUCCION&#x27;);
+
+-- TABLAS DEL MODELO SIN DATOS DML OBSERVADOS EN LAS CAPTURAS:
+-- BANCO, CIUDAD, CONTRATOS, DEPARTAMENTO, ESTADO_CIVIL,
+-- NACIONALIDAD, TIPO_CONTRATO, TIPO_DOCUMENTO,
+-- TIPO_EMPLEADO y TIPO_SALARIO.
+</pre></div>
   </div>
 </div>
+
+<section class="section reveal" id="conclusiones-unidad4" style="margin-top:62px">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Unidad 4 · Cierre</span>
+      <h2>Conclusiones de la actividad</h2>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:24px">
+    <p>
+      El desarrollo de esta unidad permitió consolidar la propuesta de un sistema de
+      gestión de nómina y administración de personal mediante un modelo relacional
+      implementado en Oracle. A partir de la revisión de la estructura y de los datos
+      disponibles en el esquema, se identificaron las tablas que conforman el modelo,
+      sus principales atributos y las relaciones que pudieron ser verificadas
+      directamente en la base de datos.
+    </p>
+
+    <p>
+      La construcción y revisión del modelo permitió reconocer la importancia de
+      separar la información en entidades relacionadas, evitando duplicidad de datos
+      y facilitando su mantenimiento. La organización de entidades como empresas,
+      empleados, nómina, detalle de nómina y tablas de referencia contribuye a una
+      estructura más ordenada y coherente para el manejo de la información.
+    </p>
+
+    <p>
+      La consulta de las tablas en Oracle Database Actions también permitió comprobar
+      que el modelo no debe documentarse únicamente desde una representación
+      conceptual. Es necesario contrastar el modelo con la estructura física de la
+      base de datos, especialmente al identificar claves primarias, claves foráneas,
+      atributos y restricciones. Por esta razón, en esta unidad se diferenciaron las
+      relaciones que pudieron ser verificadas en Oracle de aquellas estructuras del
+      esquema que requieren una consulta física adicional para documentar su DDL con
+      total precisión.
+    </p>
+
+    <p>
+      Finalmente, la actividad permitió relacionar el diseño de la base de datos con
+      la aplicación desarrollada en Oracle APEX y con los datos de prueba observados.
+      Esto evidencia cómo el modelo relacional sirve como fundamento para construir
+      consultas, registrar información de empleados y administrar procesos asociados
+      a la nómina. El resultado constituye un prototipo académico que integra el
+      análisis del problema, el diseño de la base de datos, su implementación y la
+      evidencia de funcionamiento.
+    </p>
+  </div>
+
+  <div class="grid-3" style="margin-top:20px">
+    <div class="card">
+      <strong>Diseño</strong>
+      <p class="muted">Se estructuró la información mediante entidades relacionadas y se revisó su normalización.</p>
+    </div>
+    <div class="card">
+      <strong>Implementación</strong>
+      <p class="muted">La propuesta fue llevada a Oracle y se verificaron tablas, registros y relaciones disponibles.</p>
+    </div>
+    <div class="card">
+      <strong>Aplicación</strong>
+      <p class="muted">La estructura sirve como base para la gestión de empleados y procesos de nómina en el prototipo.</p>
+    </div>
+  </div>
+</section>
 
 <div class="section-head" style="margin-top:62px">
   <div><div class="section-tag">EVIDENCIA · ORACLE DATABASE ACTIONS</div><h2>Datos de prueba utilizados</h2></div>
