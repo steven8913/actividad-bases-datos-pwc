@@ -34,6 +34,14 @@
 .status-chip{display:inline-flex;padding:4px 8px;border-radius:999px;background:#fff4da;color:#936300;font-size:11px;font-weight:800}
 .u4-note{margin-top:18px;padding:16px 18px;border-left:4px solid var(--gold);background:#fff9ea;border-radius:13px;color:#5f6876}
 .sql-columns{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:20px}
+.sql-download{margin-top:22px;padding:22px;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:20px}
+.sql-download-copy{display:flex;align-items:center;gap:15px}
+.sql-download-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#e5f8f6;color:#078b84;font-weight:900;font-size:20px;flex:none}
+.sql-download h3{margin:0 0 4px;font-size:18px;font-family:Manrope,sans-serif}
+.sql-download p{margin:0;color:#687990;font-size:13px}
+.sql-download-btn{display:inline-flex;align-items:center;gap:9px;padding:12px 17px;border-radius:14px;background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;text-decoration:none;font-weight:800;font-size:14px;white-space:nowrap;box-shadow:0 10px 24px rgba(31,99,233,.18)}
+.sql-download-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(31,99,233,.24)}
+@media(max-width:700px){.model-flow,.sql-columns{grid-template-columns:1fr}.sql-download{flex-direction:column;align-items:flex-start}.sql-download-btn{width:100%;justify-content:center}}
 @media(max-width:700px){.model-flow,.sql-columns{grid-template-columns:1fr}}
 
 </style>
@@ -481,6 +489,19 @@ VALUES
 -- TIPO_EMPLEADO y TIPO_SALARIO.
 </pre></div>
   </div>
+</div>
+
+<div class="sql-download reveal">
+  <div class="sql-download-copy">
+    <div class="sql-download-icon">↓</div>
+    <div>
+      <h3>Archivo SQL para MySQL</h3>
+      <p>Script convertido y preparado para importar en MySQL, sin depender del esquema ADB_APP_STORE.</p>
+    </div>
+  </div>
+  <a class="sql-download-btn" href="ADB_APP_STORE_MySQL_SIN_ESQUEMA.sql" download="ADB_APP_STORE_MySQL_SIN_ESQUEMA.sql">
+    Descargar archivo .SQL <span>↓</span>
+  </a>
 </div>
 
 <section class="section reveal" id="conclusiones-unidad4" style="margin-top:62px">
